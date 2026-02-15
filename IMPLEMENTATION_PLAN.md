@@ -13,6 +13,15 @@ Build a Go proxy that allows an ADK (`google/adk-go`) agent to use a running Goo
   - `google.golang.org/genai` (ADK genai types: Content, Part, FunctionCall)
   - `net/http` stdlib (Goose REST client)
   - `bufio.Scanner` stdlib for SSE parsing (no external SSE library needed)
+
+### Design Decisions
+
+**Why `google.golang.org/genai` instead of `google/adk-go`?**
+The proxy only needs the data types (`genai.Content`, `genai.Part`, `genai.FunctionCall`, etc.) to serialize and deserialize the ADK REST JSON format. The full `google/adk-go` SDK brings in the agent runner, session stores, memory services, model backends, and telemetry — none of which the proxy uses. The `genai` package is already a transitive dependency of `adk-go`, so importing it directly avoids pulling in the entire agent framework (~20+ packages) just for struct definitions.
+
+**Why stdlib SSE parsing instead of `github.com/r3labs/sse/v2`?**
+Goose's SSE format is simple `data: {json}\n\n` lines. A `bufio.Scanner` handles this in ~15 lines of code. An external SSE library would add a dependency with its own reconnection logic, event ID tracking, and retry semantics that the proxy doesn't need — connection lifecycle and context cancellation are already managed by the proxy itself.
+
 - [x] Create directory layout:
 
 ```
