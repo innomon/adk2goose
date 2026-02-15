@@ -8,12 +8,12 @@ Build a Go proxy that allows an ADK (`google/adk-go`) agent to use a running Goo
 
 ## Phase 0: Project Bootstrap
 
-- [ ] `go mod init github.com/innomon/adk2goose`
-- [ ] Add dependencies:
-  - `google/adk-go` (ADK interfaces, session, event types)
+- [x] `go mod init github.com/innomon/adk2goose`
+- [x] Add dependencies:
+  - `google.golang.org/genai` (ADK genai types: Content, Part, FunctionCall)
   - `net/http` stdlib (Goose REST client)
-  - `github.com/r3labs/sse/v2` or raw `bufio.Scanner` for SSE parsing
-- [ ] Create directory layout:
+  - `bufio.Scanner` stdlib for SSE parsing (no external SSE library needed)
+- [x] Create directory layout:
 
 ```
 adk2goose/
@@ -297,16 +297,16 @@ func main() {
 
 ## Execution Order Summary
 
-| Phase | Deliverable                        | Depends On |
-|-------|------------------------------------|------------|
-| 0     | Project scaffold, `go.mod`         | —          |
-| 1     | Goose client + types + SSE parser  | Phase 0    |
-| 2     | ADK ↔ Goose translators            | Phase 1    |
-| 3     | Session manager                    | Phase 1    |
-| 4     | Proxy HTTP handler                 | Phase 2, 3 |
-| 5     | Config & auth                      | Phase 0    |
-| 6     | Error handling & retry             | Phase 1    |
-| 7     | Tests (mock server + integration)  | Phase 4    |
-| 8     | CLI entrypoint + graceful shutdown | Phase 4, 5 |
+| Phase | Deliverable                        | Depends On | Status |
+|-------|------------------------------------|------------|--------|
+| 0     | Project scaffold, `go.mod`         | —          | ✅ Done |
+| 1     | Goose client + types + SSE parser  | Phase 0    | ✅ Done |
+| 2     | ADK ↔ Goose translators            | Phase 1    | ✅ Done |
+| 3     | Session manager                    | Phase 1    | ✅ Done |
+| 4     | Proxy HTTP handler                 | Phase 2, 3 | ✅ Done |
+| 5     | Config & auth                      | Phase 0    | ✅ Done |
+| 6     | Error handling & retry             | Phase 1    | ✅ Done |
+| 7     | Tests (mock server + integration)  | Phase 4    | ✅ Done |
+| 8     | CLI entrypoint + graceful shutdown | Phase 4, 5 | ✅ Done |
 
 Phases 2, 3, 5, and 6 can be developed in parallel once Phase 1 is complete.
